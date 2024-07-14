@@ -1,38 +1,43 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
-// import { newVerification } from '@/actions/new-verification'
 import { Header } from './header'
 import { FormError } from '../form-error'
 import { FormSuccess } from '../form-success'
-import { Button } from '../ui/button'
+import { BeatLoader } from 'react-spinners'
+import { newVerificationActions } from '@/app/auth/new-verification/actions'
 
 export const NewVerificationForm = () => {
   const [error, setError] = useState<string | undefined>('')
   const [success, setSuccess] = useState<string | undefined>('')
 
   const searchParams = useSearchParams()
+
   const token = searchParams.get('token')
 
-  // useEffect(() => {
-  //   if (!token) {
-  //     setError('Missing token!')
-  //     return
-  //   }
-  //
-  //   newVerification(token)
-  //     .then((data) => {
-  //       if (data.success) {
-  //         setSuccess('Verification successful!')
-  //       } else {
-  //         setError(data.error || 'Something went wrong!')
-  //       }
-  //     })
-  //     .catch(() => {
-  //       setError('Something went wrong!')
-  //     })
-  // }, [token])
+  const onSubmit = useCallback(() => {
+    if (success || error) return
+
+    if (!token) {
+      setError('Missing token!')
+
+      return
+    }
+
+    newVerificationActions(token)
+      .then((data) => {
+        setSuccess(data.success)
+        setError(data.error)
+      })
+      .catch(() => {
+        setError('Something went wrong!')
+      })
+  }, [token, success, error])
+
+  useEffect(() => {
+    onSubmit()
+  }, [onSubmit])
 
   return (
     <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
@@ -40,11 +45,12 @@ export const NewVerificationForm = () => {
         title="Verify Your Email"
         subtitle="Please confirm your email to continue."
       />
-      <FormSuccess message={success} />
-      <FormError message={error} />
-      <Button className="w-full mt-4" disabled={true}>
-        Verify Email
-      </Button>
+
+      <div className="w-full flex items-center justify-center mt-8">
+        {!success && !error && <BeatLoader />}
+        <FormSuccess message={success} />
+        {!success && <FormError message={error} />}
+      </div>
     </div>
   )
 }
