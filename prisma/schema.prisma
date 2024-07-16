@@ -19,45 +19,38 @@ enum UserRole {
 }
 
 model User {
-  id                    String                 @id @default(uuid())
-  name                  String?
-  email                 String?                @unique
-  emailVerified         DateTime?
-  avatarUrl             String?                @map("avatar_url")
-  password              String?
-  role                  UserRole               @default(USER)
-  isTwoFactorEnabled    Boolean                @default(false)
+  id                 String    @id @default(uuid())
+  name               String?
+  email              String?   @unique
+  emailVerified      DateTime?
+  image              String?
+  password           String?
+  role               UserRole  @default(USER)
+  isTwoFactorEnabled Boolean   @default(false)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
   twoFactorConfirmation TwoFactorConfirmation?
-  createdAt             DateTime               @default(now()) @map("created_at")
-  updatedAt             DateTime               @updatedAt @map("updated_at")
-
-  accounts Account[]
-
-  @@map("users")
-}
-
-enum AccountProvider {
-  GITHUB
-  GOOGLE
+  accounts              Account[]
 }
 
 model Account {
-  id                String          @id @default(uuid())
-  userId            String          @map("user_id")
+  id                String  @id @default(uuid())
+  userId            String  @map("user_id")
   type              String
-  provider          AccountProvider
-  providerAccountId String          @unique @map("provider_account_id")
-  refresh_token     String?         @db.Text
-  access_token      String?         @db.Text
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?         @db.Text
+  id_token          String? @db.Text
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([provider, providerAccountId, userId])
+  @@unique([provider, providerAccountId])
   @@map("accounts")
 }
 
@@ -93,9 +86,17 @@ model TwoFactorToken {
 model TwoFactorConfirmation {
   id String @id @default(uuid())
 
-  userId String @map("user_id")
+  userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId])
   @@map("two_factor_confirmation")
+}
+
+model fase {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

@@ -1,25 +1,26 @@
+/* eslint-disable camelcase */
 import NextAuth from 'next-auth'
-
-import { PrismaAdapter } from '@auth/prisma-adapter'
-import { db } from '../database'
-import { getUserById } from '@/data/user'
-import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation'
-import { getAccountByUserId } from '@/data'
-import authConfig from './auth.config'
 import { UserRole } from '@prisma/client'
+import { PrismaAdapter } from '@auth/prisma-adapter'
+
+import { db } from '@/services/database'
+import {
+  getTwoFactorConfirmationByUserId,
+  getUserById,
+  getAccountByUserId,
+} from '@/data'
+import authConfig from './auth.config'
 
 export const {
   handlers: { GET, POST },
   auth,
   signIn,
   signOut,
+  unstable_update,
 } = NextAuth({
   pages: {
     signIn: '/auth/login',
-    signOut: '/auth/login',
     error: '/auth/error',
-    verifyRequest: '/auth/login',
-    newUser: '/app',
   },
   events: {
     async linkAccount({ user }) {

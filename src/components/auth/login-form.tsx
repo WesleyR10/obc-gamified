@@ -140,21 +140,20 @@ export const LoginForm = () => {
         </button>
 
         <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
-
-        <div className="flex flex-col space-y-4">
-          <SocialLoginButton platform="GitHub" />
-          <SocialLoginButton platform="Google" />
-        </div>
-
-        <Button
-          size="sm"
-          variant="link"
-          asChild
-          className="font-normal flex justify-center mt-4"
-        >
-          <Link href="/auth/register">Don&apos;t have an account ?</Link>
-        </Button>
       </form>
+
+      <div className="flex flex-col space-y-4">
+        <SocialLoginButton />
+      </div>
+
+      <Button
+        size="sm"
+        variant="link"
+        asChild
+        className="font-normal flex justify-center mt-4"
+      >
+        <Link href="/auth/register">Don&apos;t have an account ?</Link>
+      </Button>
     </div>
   )
 }

@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs'
 import { AuthError } from 'next-auth'
 
 import { db } from '@/services/database'
-import { signIn } from '@/services/auth'
+import { signIn } from '../../../services/auth'
 import { LoginSchema } from '@/schemas/auth'
 import { getUserByEmail, getTwoFactorTokenByEmail } from '@/data'
 import { sendVerificationEmail, sendTwoFactorTokenEmail } from '@/services/mail'
